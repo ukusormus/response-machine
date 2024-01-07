@@ -77,7 +77,7 @@ async def main(port: int, is_ssl: bool):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-p', '--port',
-                        required=True, type=int, default=8888)
+                        type=int, default=8888)
     parser.add_argument('--ssl', action='store_true')
 
     args = parser.parse_args()

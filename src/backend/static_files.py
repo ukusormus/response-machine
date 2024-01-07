@@ -28,6 +28,8 @@ def filename_to_response(filename: bytes) -> bytes:
         response += b"application/javascript"
     elif filename.endswith(b".css"):
         response += b"text/css"
+    elif filename.endswith(b".ico"):
+        response += b"image/x-icon"
     else:
         response += b"text/plain"
 

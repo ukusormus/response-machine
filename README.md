@@ -1,9 +1,14 @@
 # HTTP Response Machine 🤖
 
-Raw HTTP response to a URL
+Raw HTTP response to a URL converter
 
 Demo: [https://response.ee](https://response.ee)\
 (http:// also supported)
+
+Running locally:
+```sh
+python3.11 src/backend/server.py
+```
 
 Ideas:
 

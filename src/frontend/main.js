@@ -1,7 +1,7 @@
 import {encode} from 'https://cdn.jsdelivr.net/npm/js-base64@3.7.5/base64.mjs';
 import {examples} from "./examples.js";
 
-const SERVER_URL = "http://localhost:8888/data/"
+const SERVER_URL = location.origin + "/data/";
 
 const root = document.querySelector("#root");
 const httpResponseInput = document.querySelector("#httpResponse");
