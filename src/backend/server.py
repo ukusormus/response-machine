@@ -1,6 +1,7 @@
 import argparse
 import asyncio
 import base64
+import logging
 import ssl
 
 import static_files
@@ -24,7 +25,7 @@ def handle_message(data: bytes) -> bytes:
         start = len(REQ_MSG_PREFIX)
         idx = data.find(b' ', start)
         stop = idx if idx != -1 else len(data)
-        print(data[start:stop])
+        logging.debug(data[start:stop])
         return base64.urlsafe_b64decode(data[start:stop] + b"==")
         # ^ padding hack to support unpadded urlsafe base64 for the base64 library; any unnecessary padding is discarded
     except Exception:
@@ -37,24 +38,24 @@ async def client_connected(reader: asyncio.StreamReader, writer: asyncio.StreamW
     response: bytes = handle_message(data)
 
     addr = writer.get_extra_info("peername")
-    print(f"Received {data} from {addr}")
+    logging.debug(f"Received {data} from {addr}")
 
-    print(f"Send: {response}")
+    logging.debug(f"Send: {response}")
     writer.write(response)
     await writer.drain()
 
-    print("Close the connection")
+    logging.debug("Close the connection")
     writer.close()
     await writer.wait_closed()
 
 
 async def main(port: int, is_ssl: bool):
     static_files.load()
-    print(f"Loaded static files into memory: {list(static_files.file_contents.keys())}")
+    logging.info(f"Loaded static files into memory: {list(static_files.file_contents.keys())}")
 
     ssl_context = None
     if is_ssl:
-        print("SSL")
+        logging.info("SSL")
         ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
         ssl_cert = "/etc/letsencrypt/live/response.ee/fullchain.pem"
         ssl_key = "/etc/letsencrypt/live/response.ee/privkey.pem"
@@ -68,7 +69,7 @@ async def main(port: int, is_ssl: bool):
     )
 
     addrs = ", ".join(str(sock.getsockname()) for sock in server.sockets)
-    print(f"Serving on {addrs}")
+    logging.info(f"Serving on {addrs}")
 
     async with server:
         await server.serve_forever()
@@ -79,7 +80,13 @@ if __name__ == "__main__":
     parser.add_argument('-p', '--port',
                         type=int, default=8888)
     parser.add_argument('--ssl', action='store_true')
+    parser.add_argument('-v', '--verbose', action='store_true')
 
     args = parser.parse_args()
+
+    if args.verbose:
+        logging.basicConfig(level=logging.DEBUG)
+    else:
+        logging.basicConfig(level=logging.INFO)
 
     asyncio.run(main(port=args.port, is_ssl=args.ssl))
