@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>HTTP Response Machine 🤖</title>
+  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="stylesheet" href="reset.css">
+
+  <!-- Shoelace -->
+  <link
+    rel="stylesheet"
+    media="(prefers-color-scheme:light)"
+    href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.12.0/cdn/themes/light.css"
+  />
+  <link
+    rel="stylesheet"
+    media="(prefers-color-scheme:dark)"
+    href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.12.0/cdn/themes/dark.css"
+    onload="document.documentElement.classList.add('sl-theme-dark');"
+  />
+  <script type="module"
+          src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.12.0/cdn/shoelace-autoloader.js"></script>
+  <!-- /Shoelace -->
+  <link rel="stylesheet" href="style.css">
+  <script src="main.js" type="module"></script>
+</head>
+<body>
+<main id="root">
+  <h1>HTTP Response Machine 🤖</h1>
+  <br>
+
+  <sl-select placeholder="Select one" label="Examples:" id="exampleSelect">
+  </sl-select>
+  <br>
+
+  <sl-textarea label="Your custom HTTP response:" rows="10" autocomplete="off" spellcheck="false" id="httpResponse"></sl-textarea>
+  <br>
+
+  <p>
+    <sl-copy-button from="responseLink"></sl-copy-button>Response URL:<br>
+    <a id="responseLink" target="_blank"></a>
+  </p>
+  <br>
+
+  <p id="errorMessage"></p>
+
+  <br>
+  <sl-divider></sl-divider>
+  <br>
+
+  <h2>What?</h2>
+  <ol>
+  <li>Create a fully custom HTTP<sup>*</sup> response</li>
+  <li>Go to the generated URL to receive it!</li>
+  </ol>
+  <small style="color: var(--sl-color-gray-600)"><sup>*</sup><i>Does not have to conform to any standards</i></small>
+
+  <h2>How?</h2>
+  <p>
+    Use JavaScript escape sequences for newlines (e.g. <code>\r\n</code> for normative "CRLF" HTTP header separator). Smashing <kbd>Enter</kbd> has no effect. Other escape sequences are also supported (e.g. <code>\\</code> for backslash, <code>\u202e</code> for right-to-left
+    override, <code>\t</code> for tab).
+    <br><br>
+
+  </p>
+
+  <h2>Why?</h2>
+  <p>
+    This tool allows you to quickly check how a receiver (e.g. a web browser) reacts to a header or another, or if there's any
+    funny behaviour handling various combinations of carriage returns, line feeds, null bytes or other folks. It can also be used as a custom open redirector, Proof-of-Concept generator, ... Imagination is your limit!
+  </p>
+
+  <br>
+  <sl-divider></sl-divider>
+  <br>
+</main>
+
+</body>
+</html>
