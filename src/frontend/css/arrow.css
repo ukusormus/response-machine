@@ -1,0 +1,40 @@
+/* Arrow: https://codepen.io/renaudtertrais/pen/DBxmYg */
+.arrow {
+    position: relative;
+    width: 2rem;
+    height: 2rem;
+}
+
+.arrow:before,
+.arrow:after {
+    content: "";
+    border-color: transparent;
+    border-style: solid;
+    position: absolute;
+}
+
+.arrow-down:before {
+    border: none;
+    background: linear-gradient(to bottom, transparent, #555);
+    height: 25%;
+    width: 30%;
+    top: -0.1rem;
+    left: 35%;
+}
+
+.arrow-down:after {
+    left: 0;
+    top: 0.4rem;
+    border-width: 1rem 1rem;
+    border-top-color: #555;
+}
+
+@media (prefers-color-scheme: dark) {
+    .arrow-down:before {
+        background: linear-gradient(to bottom, transparent, #47474b);
+    }
+
+    .arrow-down:after {
+        border-top-color: #47474b;
+    }
+}

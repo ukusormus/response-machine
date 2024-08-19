@@ -1,0 +1,116 @@
+.center-children-vertically {
+    display: flex;
+    justify-content: center;
+}
+
+body {
+    font-family: monospace;
+    font-size: 16px;
+    height: 100vh;
+}
+
+main {
+    width: 100%;
+    max-width: 55rem;
+    padding: 2em;
+}
+
+/* Custom highlight for Unicode codepoints etc.*/
+kbd {
+    outline: 1px rgba(0, 0, 0, 0.1) solid;
+    outline-offset: -1px;
+    border-radius: 10%;
+}
+
+kbd, kbd * {
+    /* Little hack to override highlight.js styles */
+    color: black !important;
+    background: rgb(224, 237, 255) !important;
+}
+
+details {
+    cursor: pointer;
+}
+
+code-input {
+    border: 1px solid rgba(0, 0, 0, 0.1);
+
+    flex-shrink: 0;
+    width: calc(100% + 2rem);
+
+    /* grow with content */
+    height: min-content;
+
+    /* override padding from code-editor lib */
+    /*--padding: 0px;*/
+    margin: 0;
+}
+
+code-input textarea,
+code-input pre {
+    /* always wrap content */
+    white-space: pre-wrap;
+    word-break: break-all;
+    max-width: min-content;
+
+    /* override JS fixating the height with inline style and causing the textarea not to shrink
+    after deleting content */
+    height: min-content !important;
+    /*min-height: 16px !important;*/
+
+    /* fixes the "CSS reset" directive `* { box-sizing: border-box }` causing cursor to jump around */
+    box-sizing: content-box;
+}
+
+#input > div {
+    margin-bottom: 0.5rem;
+
+}
+
+a#response-link {
+    word-break: break-all;
+}
+
+a#response-link::before {
+    content: '\2197\a0';
+    display: inline-block;
+}
+
+a, a:visited {
+    color: LinkText;
+}
+
+select {
+    max-width: 100%;
+    text-overflow: ellipsis;
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #0d1117;
+        color: white;
+    }
+
+    code-input, fieldset {
+        border: 1px #30363d solid;
+    }
+
+    code-input:focus-within {
+        border: 1px #1f6feb solid;
+        border: 1px #b1ceff solid;
+    }
+
+    kbd {
+        outline: 1px rgba(255, 255, 255, 0.3) solid;
+    }
+
+    kbd, kbd * {
+        /* Little hack to override highlight.js styles */
+        color: white !important;
+        background: rgb(65, 65, 65) !important;
+    }
+
+    a, a:visited {
+        color: #4493f8;
+    }
+}

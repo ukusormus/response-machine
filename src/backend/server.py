@@ -33,20 +33,24 @@ def handle_message(data: bytes) -> bytes:
 
 
 async def client_connected(reader: asyncio.StreamReader, writer: asyncio.StreamWriter):
-    data: bytes = await reader.read(REQ_MSG_MAX_LEN)
+    try:
+        data: bytes = await reader.read(REQ_MSG_MAX_LEN)
 
-    response: bytes = handle_message(data)
+        response: bytes = handle_message(data)
 
-    addr = writer.get_extra_info("peername")
-    logging.debug(f"Received {data} from {addr}")
+        addr = writer.get_extra_info("peername")
+        logging.debug(f"Received from {addr}: {data}")
 
-    logging.debug(f"Send: {response}")
-    writer.write(response)
-    await writer.drain()
+        logging.debug(f"Send: {response}")
+        writer.write(response)
+        await writer.drain()
 
-    logging.debug("Close the connection")
-    writer.close()
-    await writer.wait_closed()
+        logging.debug("Close the connection")
+        writer.close()
+        await writer.wait_closed()
+    except (ConnectionResetError, ssl.SSLError, TimeoutError) as e:
+        # Keep logs clean
+        logging.debug(e)
 
 
 async def main(port: int, is_ssl: bool):

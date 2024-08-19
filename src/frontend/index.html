@@ -1,82 +1,118 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <title>HTTP Response Machine</title>
-  <meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
-  <link rel="stylesheet" href="reset.css">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Response Machine</title>
 
-  <!-- Shoelace -->
-  <link
-    rel="stylesheet"
-    media="(prefers-color-scheme:light)"
-    href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.12.0/cdn/themes/light.css"
-  />
-  <link
-    rel="stylesheet"
-    media="(prefers-color-scheme:dark)"
-    href="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.12.0/cdn/themes/dark.css"
-    onload="document.documentElement.classList.add('sl-theme-dark');"
-  />
-  <script type="module"
-          src="https://cdn.jsdelivr.net/npm/@shoelace-style/shoelace@2.12.0/cdn/shoelace-autoloader.js"></script>
-  <!-- /Shoelace -->
-  <link rel="stylesheet" href="style.css">
-  <script src="main.js" type="module"></script>
+  <!-- highlight.js -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.10.0/build/styles/github.min.css"
+        media="(prefers-color-scheme: light)">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.10.0/build/styles/github-dark.min.css"
+        media="(prefers-color-scheme: dark)">
+  <script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.10.0/build/highlight.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.10.0/build/languages/http.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.10.0/build/languages/xml.min.js"></script>
+  <script defer
+          src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.10.0/build/languages/javascript.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.10.0/build/languages/css.min.js"></script>
+
+  <!-- code-input -->
+  <script defer src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.3/code-input.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.3/code-input.min.css"
+        integrity="sha384-xZs4WJV8m+Jyr9x2myeMi0eUpnIaE1f5MOfUUE1B2D4aF1EAFTNXTPixqHqZtFxc" crossorigin="anonymous">
+
+  <!-- custom -->
+  <link rel="stylesheet" href="css/reset.css">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/arrow.css">
+  <link rel="stylesheet" href="css/copy-button.css">
+
+  <script defer src="js/base64.js"></script>
+  <script defer src="js/hljs-merge-plugin.js"></script>
+  <script defer src="js/copy-button.js"></script>
+  <script defer src="js/examples.js"></script>
+  <script defer src="js/main.js"></script>
+
 </head>
-<body>
-<main id="root">
-  <h1>HTTP Response Machine 🤖</h1>
-  <br>
+<body class="center-children-vertically">
+<main>
+  <div id="input">
+    <div>
+      <details>
+        <summary>Options</summary>
 
-  <sl-select placeholder="Select one" label="Examples:" id="exampleSelect">
-  </sl-select>
-  <br>
-
-  <sl-textarea label="Your custom HTTP response:" rows="10" autocomplete="off" spellcheck="false" id="httpResponse"></sl-textarea>
-  <br>
-
-  <p>
-    <sl-copy-button from="responseLink"></sl-copy-button>Response URL:<br>
-    <a id="responseLink" target="_blank"></a>
-  </p>
-  <br>
-
-  <p id="errorMessage"></p>
-
-  <br>
-  <sl-divider></sl-divider>
-  <br>
-
-  <h2>What?</h2>
-  <ol>
-  <li>Create a fully custom HTTP<sup>*</sup> response</li>
-  <li>Go to the generated URL to receive it!</li>
-  </ol>
-  <small style="color: var(--sl-color-gray-600)"><sup>*</sup><i>Does not have to conform to any standards</i></small>
-
-  <h2>How?</h2>
-  <p>
-    Use JavaScript escape sequences for newlines (e.g. <code>\r\n</code> for normative "CRLF" HTTP header separator). Smashing <kbd>Enter</kbd> has no effect. Other escape sequences are also supported (e.g. <code>\\</code> for backslash, <code>\u202e</code> for right-to-left
-    override, <code>\t</code> for tab).
-    <br><br>
-
-  </p>
-
-  <h2>Why?</h2>
-  <p>
-    This tool allows you to quickly check how a receiver (e.g. a web browser) reacts to a header or another, or if there's any
-    funny behaviour handling various combinations of carriage returns, line feeds, null bytes and other folks. It can also be used as a custom open redirector, Proof-of-Concept generator, ... Imagination is your limit!
-  </p>
-
-  <br>
-  <sl-divider></sl-divider>
-
-  <a href="https://github.com/ukusormus/response-machine">Source code</a>
-  <br>
-  <br>
+        <fieldset id="input-options">
+          <legend>Editor escape sequences</legend>
+          <div>
+            <input
+              type="checkbox"
+              id="unicode-esc-seq"
+              checked
+            />
+            <label for="unicode-esc-seq"
+            >Unicode codepoints -
+              <kbd>\u[<i>X</i>]</kbd> (<i>X</i> is hex, 0
+              &lt;= <i>X</i> &lt;= 10FFFF)</label
+            >
+          </div>
+          <div>
+            <input
+              type="checkbox"
+              id="manual-newlines-esc-seq"
+            />
+            <label for="manual-newlines-esc-seq"
+            >Manual newlines - <kbd>\r</kbd>,
+              <kbd>\n</kbd> (when enabled, visual newlines in editor have no
+              effect on output)</label
+            >
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Syntax highlighting</legend>
+          <div>
+            <input
+              type="checkbox"
+              id="syntax-highlighting"
+              checked
+            />
+            <label for="syntax-highlighting"
+            >Enable <i>highlight.js</i> syntax highlighting</label
+            >
+          </div>
+        </fieldset>
+      </details>
+    </div>
+    <div>
+      <label for="example-select">
+        Choose an example response:
+      </label>
+      <div>
+        <select id="example-select"></select>
+      </div>
+    </div>
+    <div>
+      <label>Response editor:</label>
+      <div class="center-children-vertically">
+        <code-input
+          placeholder="Type your HTTP response here..."
+          template="syntax-highlighted"
+        ></code-input>
+      </div>
+      <div class="center-children-vertically">
+        <span class="arrow arrow-down"></span>
+      </div>
+    </div>
+  </div>
+  <div id="output">
+    <div class="copy-and-link-container">
+      <button class="copy-button">
+        <span class="button-text">📋 Copy response URL</span>
+      </button>
+      <a id="response-link" target="_blank"></a>
+    </div>
+  </div>
 </main>
-
 </body>
 </html>

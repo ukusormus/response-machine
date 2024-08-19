@@ -7,13 +7,15 @@ STATIC_FILES_ROOT = os.path.join(
 file_contents = {}
 
 
-def load():
-    for filename in os.listdir(STATIC_FILES_ROOT):
-        full_path = os.path.join(STATIC_FILES_ROOT, filename)
-        if os.path.isfile(full_path):
-            with open(full_path, 'rb') as file:
-                file_contents[filename] = file.read()
 
+def load():
+    for root, _, files in os.walk(STATIC_FILES_ROOT):  # Change to os.walk to walk the directory
+        for filename in files:  # Iterate over the files
+            full_path = os.path.join(root, filename)  # Use root to get the full path
+            if os.path.isfile(full_path):
+                with open(full_path, 'rb') as file:
+                    relative_path = os.path.relpath(full_path, STATIC_FILES_ROOT)  # Get the relative path
+                    file_contents[relative_path] = file.read()  # Use relative path as the key
 
 def filename_to_response(filename: bytes) -> bytes:
     if filename == b'':
