@@ -43,11 +43,8 @@ function fallbackCopyTextToClipboard(text) {
     const successful = document.execCommand("copy");
     if (successful) {
       showCopiedFeedback();
-      return;
-    }
-
+    } else {
     console.error("Fallback: document.execCommand returned false, copying unsuccessful");
-    if (successful) {
     }
   } catch (err) {
     console.error("Fallback: unable to copy", err);
