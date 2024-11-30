@@ -1,0 +1,4 @@
+services:
+  app-http:
+    build: .
+    restart: unless-stopped

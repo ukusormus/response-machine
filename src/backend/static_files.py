@@ -1,24 +1,25 @@
 import os
 
+# ../../frontend/ from this file
 STATIC_FILES_ROOT = os.path.join(
-    os.path.dirname(os.path.dirname(__file__.encode())),
-    b"frontend/")  # ../../frontend/ from this file
+    os.path.dirname(os.path.dirname(__file__.encode())), b"frontend/"
+)
 
 file_contents = {}
 
 
-
 def load():
-    for root, _, files in os.walk(STATIC_FILES_ROOT):  # Change to os.walk to walk the directory
-        for filename in files:  # Iterate over the files
-            full_path = os.path.join(root, filename)  # Use root to get the full path
+    for root, _, files in os.walk(STATIC_FILES_ROOT):
+        for filename in files:
+            full_path = os.path.join(root, filename)
             if os.path.isfile(full_path):
-                with open(full_path, 'rb') as file:
-                    relative_path = os.path.relpath(full_path, STATIC_FILES_ROOT)  # Get the relative path
-                    file_contents[relative_path] = file.read()  # Use relative path as the key
+                with open(full_path, "rb") as file:
+                    relative_path = os.path.relpath(full_path, STATIC_FILES_ROOT)
+                    file_contents[relative_path] = file.read()
+
 
 def filename_to_response(filename: bytes) -> bytes:
-    if filename == b'':
+    if filename == b"":
         filename = b"index.html"
     if filename not in file_contents:
         return b"HTTP/1.0 404\r\n\r\nNot found."
@@ -35,5 +36,11 @@ def filename_to_response(filename: bytes) -> bytes:
     else:
         response += b"text/plain"
 
-    response += b"\r\n\r\n" + file_contents[filename]
+    content_length = bytes(str(len(file_contents[filename])), "utf-8")
+    response += (
+        b"\r\nContent-Length: "
+        + content_length
+        + b"\r\nConnection: close\r\n\r\n"
+        + file_contents[filename]
+    )
     return response
