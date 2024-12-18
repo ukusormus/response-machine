@@ -62,18 +62,39 @@ code-input pre {
     box-sizing: content-box;
 }
 
-#input > div {
+#input div {
     margin-bottom: 0.5rem;
 
 }
 
-a#response-link {
-    word-break: break-all;
+a#response-link > div {
+    display: inline-flex;
+    flex-wrap: nowrap;
+    max-width: 100%;
+    text-decoration: inherit;
 }
 
-a#response-link::before {
+a#response-link > div > span:nth-child(1) {
+    flex-shrink: 0;
+}
+
+a#response-link > div > span:nth-child(2) {
+    flex-shrink: 1;
+    min-width: 2ch;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: pre;
+}
+
+a#response-link > div > span:nth-child(3) {
+    /*word-break: break-all;*/
+    flex: 1 0 auto;
+    white-space: pre;
+}
+
+a#response-link > div::before {
     content: '\2197\a0';
-    display: inline-block;
+    display: inline-flex;
 }
 
 a, a:visited {

@@ -88,7 +88,16 @@ function updateOutputLink() {
   const output = `${location.origin}/data/${stringToURLSafeBase64(toBeEncoded)}`
 
   link.href = output;
-  link.innerText = output;
+
+  // const truncated =
+  const x = stringToURLSafeBase64(toBeEncoded);
+  const endCutoff = x.length - 7 <= 2 ? 0 : 7; // 2ch from css
+  // link.innerText = output;
+  link.innerHTML = `<div>
+<span>${location.origin}/data/</span>
+<span>${x.substring(0, x.length - endCutoff)}</span>
+<span>${x.substring(x.length - endCutoff)}</span>
+</div>`;
 }
 
 function saveInputToURLFragment() {

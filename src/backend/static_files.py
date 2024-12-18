@@ -5,7 +5,7 @@ STATIC_FILES_ROOT = os.path.join(
     os.path.dirname(os.path.dirname(__file__.encode())), b"frontend/"
 )
 
-file_contents = {}
+file_contents: dict[bytes, bytes] = {}
 
 
 def load():
@@ -36,11 +36,10 @@ def filename_to_response(filename: bytes) -> bytes:
     else:
         response += b"text/plain"
 
-    content_length = bytes(str(len(file_contents[filename])), "utf-8")
     response += (
-        b"\r\nContent-Length: "
-        + content_length
-        + b"\r\nConnection: close\r\n\r\n"
-        + file_contents[filename]
-    )
+        f"\r\n"
+        f"Content-Length: {len(file_contents[filename])}\r\n"
+        f"Connection: close\r\n\r\n"
+    ).encode("utf-8")
+    response += file_contents[filename]
     return response

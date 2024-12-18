@@ -16,7 +16,7 @@ python3 src/backend/server.py
 
 Run HTTPS server:
 ```sh
-SSL_ENABLED=true PORT=8443 python3 src/backend/server.py
+python3 src/backend/server.py
 ```
 
 ### With Docker Compose

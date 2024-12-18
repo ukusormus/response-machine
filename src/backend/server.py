@@ -36,7 +36,7 @@ class Server:
         """
         # UI static resource
         if req_line.startswith(b"GET /") and not req_line.startswith(
-            b"GET " + self.config.data_req_prefix
+            b"GET " + self.config.user_gen_response_prefix
         ):
             idx = req_line.find(b" ", len(b"GET /"))
             if idx == -1:
@@ -50,18 +50,18 @@ class Server:
             return static_files.filename_to_response(filename)
 
         # User-generated response
-        data_idx = req_line.find(self.config.data_req_prefix)
+        data_idx = req_line.find(self.config.user_gen_response_prefix)
         if data_idx == -1:
             logging.debug(
                 "Invalid request: neither static resource nor contains prefix for user-generated response"
             )
             return b""
 
-        start_idx = data_idx + len(self.config.data_req_prefix)
-        stop_idx = min(
+        start_idx = data_idx + len(self.config.user_gen_response_prefix)
+        stop_idx = min(  # stop at, whichever comes first:
             (
                 idx
-                for idx in (  # whichever comes first:
+                for idx in (
                     req_line.find(b" ", start_idx),  # request-URI end (HTTP/1.1)
                     req_line.find(b"/", start_idx),  # subpath start
                     req_line.find(b"?", start_idx),  # query param start
@@ -128,15 +128,18 @@ class Server:
             logging.debug(e)
 
     async def start(self):
-        ssl_context = None
-        ssl_handshake_timeout = None
-        ssl_shutdown_timeout = None
-        if self.config.https_enabled:
-            logging.debug("HTTPS enabled")
+        ssl_context = ssl_handshake_timeout = ssl_shutdown_timeout = None
+        if self.config.tls_cert_path:
+            logging.debug("HTTPS enabled, loading TLS server certificate")
             ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-            ssl_context.load_cert_chain(
-                self.config.tls_cert_path, keyfile=self.config.tls_key_path
-            )
+            try:
+                # If keyfile is None, private key is taken from tls_cert_path as well
+                ssl_context.load_cert_chain(
+                    certfile=self.config.tls_cert_path, keyfile=self.config.tls_key_path
+                )
+            except OSError as e:
+                logging.error("Cannot load TLS certificate and/or private key: %s", e)
+                exit(1)
             ssl_handshake_timeout = 10
             ssl_shutdown_timeout = 5
 
@@ -155,7 +158,7 @@ class Server:
                 # https://docs.python.org/3.13/library/asyncio-eventloop.html#asyncio.loop.create_server
             )
         except OSError as e:
-            logging.error(f"Cannot start server: {e}")
+            logging.error("Cannot start server: %s", e)
             exit(1)
 
         for sock in server.sockets:
@@ -164,7 +167,7 @@ class Server:
             scope_id = extra[1] if ipv6 else None
 
             url = (
-                f"http{'s' if self.config.https_enabled else ''}://"
+                f"http{'s' if self.config.tls_cert_path else ''}://"
                 f"{'[' if ipv6 else ''}{host}{f'%{scope_id}' if scope_id else ''}{']' if ipv6 else ''}:{port}/"
             )
 
@@ -172,8 +175,9 @@ class Server:
 
         static_files.load()
         logging.debug(
-            "Loaded static files into memory: %s",
+            "Loaded static files into memory: %s (total of %.2f kB)",
             [k.decode("utf-8") for k in static_files.file_contents.keys()],
+            sum(len(content) for content in static_files.file_contents.values()) / 1024,
         )
 
         async with server:

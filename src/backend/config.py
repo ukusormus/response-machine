@@ -9,7 +9,6 @@ import argparse
 import logging
 from dataclasses import dataclass
 
-# Define all configuration with their metadata in one place
 CONFIG_METADATA = {
     "port": {
         "env_var": "PORT",
@@ -25,24 +24,17 @@ CONFIG_METADATA = {
         "cli_args": ("--host",),
         "help": "Host to bind to. Empty string = all interfaces",
     },
-    "https_enabled": {
-        "env_var": "HTTPS_ENABLED",
-        "type": bool,
-        "default": False,
-        "cli_args": ("--https",),
-        "help": "Enable HTTPS (TLS)",
-    },
     "tls_cert_path": {
         "env_var": "TLS_CERT_PATH",
         "type": str,
-        "default": "",
+        "default": None,
         "cli_args": ("--tls-cert-path",),
-        "help": "Path to TLS certificate file",
+        "help": "Path to TLS certificate (or combined private key and certificate) file. Required for HTTPS",
     },
     "tls_key_path": {
         "env_var": "TLS_KEY_PATH",
         "type": str,
-        "default": "",
+        "default": None,
         "cli_args": ("--tls-key-path",),
         "help": "Path to TLS private key file",
     },
@@ -67,12 +59,12 @@ CONFIG_METADATA = {
         "cli_args": ("-v", "--verbose"),
         "help": "Enable debug mode",
     },
-    "data_req_prefix": {
-        "env_var": "DATA_REQ_PREFIX",
-        "type": bytes,
+    "user_gen_response_prefix": {
+        "env_var": "USER_GEN_RESPONSE_PREFIX",
+        "type": str,
         "default": "/data/",
-        "cli_args": ("--data-req-prefix",),
-        "help": "Path prefix for data requests",
+        "cli_args": ("--user-gen-response-prefix",),
+        "help": "Path prefix for user generated responses",
     },
 }
 
@@ -96,43 +88,19 @@ TYPE_PARSERS = {
 
 @dataclass(frozen=True)
 class ServerConfig:
-    """Server configuration parameters.
-
-    All server settings are stored here, loaded from environment variables
-    and/or command line arguments.
-    """
-
     port: int
     host: str
-    https_enabled: bool
     tls_cert_path: str
-    tls_key_path: str
+    tls_key_path: str | None
     request_timeout: int
     request_max_size: int
     debug: bool
-    data_req_prefix: bytes
-
-    def __post_init__(self):
-        if self.https_enabled:
-            if not self.tls_cert_path or not self.tls_key_path:
-                logging.error(
-                    "When HTTPS is enabled, both --tls-cert-path and --tls-key-path must be provided"
-                )
-                exit(1)
-            if not os.path.isfile(self.tls_cert_path):
-                logging.error(
-                    f"TLS certificate file not found: {self.tls_cert_path}"
-                )
-                exit(1)
-            if not os.path.isfile(self.tls_key_path):
-                logging.error(f"TLS key file not found: {self.tls_key_path}")
-                exit(1)
-
+    user_gen_response_prefix: bytes
 
 
 def parse_args() -> argparse.Namespace:
     """Parse command line arguments."""
-    parser = argparse.ArgumentParser(description="HTTP response machine")
+    parser = argparse.ArgumentParser(description="HTTP response machine 🤖")
 
     for field_name, metadata in CONFIG_METADATA.items():
         if not metadata["cli_args"]:
@@ -191,8 +159,11 @@ def load_config() -> ServerConfig:
 
         config_dict[field_name] = value
 
-    # Special handling for request_max_size to convert MB to bytes
     if "request_max_size" in config_dict:
         config_dict["request_max_size"] *= 1024 * 1024
+
+    if "user_gen_response_prefix" in config_dict:
+        config_dict["user_gen_response_prefix"] = config_dict["user_gen_response_prefix"].encode("utf-8")
+
 
     return ServerConfig(**config_dict)

@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Response Machine</title>
+  <title>HTTP Response Machine</title>
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🤖</text></svg>">
 
   <!-- highlight.js -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.10.0/build/styles/github.min.css"
@@ -20,8 +22,7 @@
 
   <!-- code-input -->
   <script defer src="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.3/code-input.min.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.3/code-input.min.css"
-        integrity="sha384-xZs4WJV8m+Jyr9x2myeMi0eUpnIaE1f5MOfUUE1B2D4aF1EAFTNXTPixqHqZtFxc" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/WebCoder49/code-input@2.3/code-input.min.css">
 
   <!-- custom -->
   <link rel="stylesheet" href="css/reset.css">
@@ -107,10 +108,12 @@
   </div>
   <div id="output">
     <div class="copy-and-link-container">
+
+      <a id="response-link" target="_blank"></a>
+
       <button class="copy-button">
         <span class="button-text">📋 Copy response URL</span>
       </button>
-      <a id="response-link" target="_blank"></a>
     </div>
   </div>
 </main>

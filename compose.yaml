@@ -12,9 +12,9 @@ services:
     ports:
       - "443:8443"
     environment:
-      - HTTPS_ENABLED=true
+      - PORT=8443
       - TLS_CERT_PATH=/cert/tls.crt
       - TLS_KEY_PATH=/cert/tls.key
     volumes:
-      - temp_cert:/cert:ro
+      - ./temp_cert:/cert:ro
     restart: unless-stopped
