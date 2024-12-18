@@ -65,6 +65,7 @@ Content-Type: text/html
     "description": "Redirect (Location header)",
     "value": `HTTP/1.1 302
 Location: https://www.example.com
+
 `
   },
   "redirect-refresh": {
@@ -102,6 +103,7 @@ contentz`,
     "description": "Set-Cookie",
     "value": `HTTP/1.1 200
 Set-Cookie: __Host-ID=123; Secure; Path=/; SameSite=Strict
+
 `
   },
   "csp": {
@@ -116,11 +118,12 @@ Content-Security-Policy: default-src 'self'; style-src 'unsafe-inline'
     "description": "WWW-Authenticate (Basic auth)",
     "value": `HTTP/1.1 401
 WWW-Authenticate: Basic realm="test"
+
 `
   },
   "xml-external-dtd": {
     "description": "XML External DTD",
-    "value": `...`
+    "value": `todo`
   }
 };
 
