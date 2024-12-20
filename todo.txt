@@ -1,8 +1,14 @@
-text-overflow: ellipsis;
-  overflow: hidden;
-  display: inline-block;
-  white-space: nowrap;
-  max-width: 100%;
-}
+ansible
+- init, copy app files, install docker (with compose), ...
+- set a schedule for wildcart cert automation & app restart
 
-?
+
+docker run --rm -v "$(pwd)/lego":/.lego -e ZONEEE_API_USER='' -e ZONEEE_API_KEY='' goacme/lego --domains response.ee --domains '*.response.ee' --domains '*.x.response.ee' --accept-tos --email '' --dns zoneee --pem run
+
+docker-compose restart
+
+https://go-acme.github.io/lego/dns/zoneee/
+https://github.com/zone-eu/zone-docs/blob/master/articles/est/LetsEncrypt-Lego.md
+
+also source code updates? github ci/cd pipeline?
+
