@@ -37,9 +37,10 @@ def filename_to_response(filename: bytes) -> bytes:
         response += b"text/plain"
 
     response += (
-        f"\r\n"
+        "\r\n"
         f"Content-Length: {len(file_contents[filename])}\r\n"
-        f"Connection: close\r\n\r\n"
+        "Cache-Control: max-age=86400\r\n"
+        "Connection: close\r\n\r\n"
     ).encode("utf-8")
     response += file_contents[filename]
     return response

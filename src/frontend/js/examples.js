@@ -40,9 +40,8 @@ access to a large universe of documents.
   },
   "invalid-http": {
     "description": "Invalid response?!",
-    "value": `HTTP/420\\r
-x-wot: \\u0000test
-\\n\\n\\n\\n
+    "value": `HTTP/420
+x-wot: \\u[0]test
 
 firefox is fine with me, chromium ain't`
   },
